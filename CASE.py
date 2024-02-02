@@ -7,8 +7,8 @@ from openai import OpenAI
 import os
 from datetime import datetime
 
-
-client = OpenAI(os.environ["api_key"])
+apikey = st.secrets["API_KEY"]
+client = OpenAI(api_key = apikey)
 
 def response(fach, thema):
     response = client.chat.completions.create(
