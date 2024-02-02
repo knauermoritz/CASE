@@ -16,7 +16,7 @@ def response(fach, thema):
         response_format={"type": "json_object"},
         messages=[
             {"role": "system", "content": "You are a helpful assistant designed to output JSON."},
-            {"role": "user", "content": f"Create a worksheet for the subject {subject} on the {topic}. the first 5 questions should be comprehension questions. the second 2 questions should be multiple choice questions(a), b), c), d)), and the last question should be a cloze(c.a 4 sentences). it should be in this format : worksheet: ['heading', 'comprehension question', 'comprehension question', 'comprehension question', 'comprehension question', 'comprehension question 5', 'multiple choice question a) answer, b) answer, c) answer, d) answer', 'multiple choice', 'cloze text']"}
+            {"role": "user", "content": f"Create a worksheet for the subject {fach} on the {thema}. the first 5 questions should be comprehension questions. the second 2 questions should be multiple choice questions(a), b), c), d)), and the last question should be a cloze(c.a 4 sentences). it should be in this format : worksheet: ['heading', 'comprehension question', 'comprehension question', 'comprehension question', 'comprehension question', 'comprehension question 5', 'multiple choice question a) answer, b) answer, c) answer, d) answer', 'multiple choice', 'cloze text']"}
         ]
     )
     while True:
