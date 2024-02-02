@@ -8,14 +8,14 @@ import os
 from datetime import datetime
 
 client = OpenAI(api_key='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')
-chat
+
 def response(fach, thema):
     response = client.chat.completions.create(
         model="gpt-3.5-turbo-1106",
         response_format={"type": "json_object"},
         messages=[
             {"role": "system", "content": "You are a helpful assistant designed to output JSON."},
-            {"role": "user", "content": f"Erstelle ein Arbeitsblatt für das Fach {fach} zum {thema}. die ersten 5 fragen sollen verständnisfragen sein. die zweiten 2 fragen sollen multiple choise fragen sein(a), b), c), d)), und die letzte frage soll ein lückentext sein(c.a 4 sätze). es soll in diesem format sein : arbeitsblatt: ['Überschrift', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage 5', 'Multiple Frage choise a) antwort, b) antwort, c) antwort, d) antwort', 'Multiple choise', 'Lückentext']"}
+            {"role": "user", "content": f"Create a worksheet for the subject {subject} on the {topic}. the first 5 questions should be comprehension questions. the second 2 questions should be multiple choice questions(a), b), c), d)), and the last question should be a cloze(c.a 4 sentences). it should be in this format : worksheet: ['heading', 'comprehension question', 'comprehension question', 'comprehension question', 'comprehension question', 'comprehension question 5', 'multiple choice question a) answer, b) answer, c) answer, d) answer', 'multiple choice', 'cloze text']"}
         ]
     )
     while True:
@@ -73,13 +73,13 @@ def word(ab, fach):
     return title, doc_name
 
 def fach():
-    school_subjects = ["Mathematik 🔢","Deutsch 📚","Englisch 🇬🇧","Geschichte 📜","Geografie 🌍","Biologie 🌿","Chemie 🧪","Physik ⚙️","Informatik 💻", "Musik 🎵","Kunst 🎨","Sport 🏃‍♂️","Ethik 🤔","Religion ⛪","Politik 🗳️","Wirtschaft 💹","Philosophie 🤯", "Sozialkunde 👥","Psychologie 🧠","Sociology 👩‍👩‍👧‍👦","Fremdsprache 🗣️", "Latein 🏛️","Spanisch 🇪🇸", "Französisch 🇫🇷","Italienisch 🇮🇹","Russisch 🇷🇺","Chinesisch 🇨🇳","Japanisch 🇯🇵","Koreanisch 🇰🇷","Arabisch 🇸🇦","Medienkunde 📱",]
+    school_subjects = ["mathematics 🔢", "german 📚", "english 🇬🇧", "history 📜", "geography 🌍", "biology 🌿", "chemistry 🧪", "physics ⚙️", "computer science 💻", "music 🎵", "art 🎨", "physical education 🏃‍♂️", "ethics 🤔", "religion ⛪", "politics 🗳️", "economics 💹", "philosophy 🤯", "social studies 👥", "psychology 🧠", "sociology 👩‍👩‍👧‍👦", "foreign language 🗣️", "latin 🏛️", "spanish 🇪🇸", "french 🇫🇷", "italian 🇮🇹", "russian 🇷🇺",]
 
-    subject_option = st.selectbox("Schulfach", ["Wähle ein Fach", "Eigenes Fach eingeben"] + school_subjects)
+    subject_option = st.selectbox("school subject", ["chose a subject", "other school subject"] + school_subjects)
 
-    if subject_option == "Wähle ein Fach":
+    if subject_option == "chose a subject":
         subject = None
-    elif subject_option == "Eigenes Fach eingeben":
+    elif subject_option == "other school subject":
         subject = st.text_input("Eigenes Schulfach eingeben")[:-1]
         st.empty()
     else:
@@ -97,10 +97,10 @@ st.title("CASE")
 fach_selection = fach()
 thema = st.text_input("Thema:")
 
-if st.button("Arbeitsblatt erstellen"):
+if st.button("Create worksheet"):
     ab = response(fach_selection, thema)
     title, doc_name = word(ab, fach_selection)
-    st.success(f"Arbeitsblatt erfolgreich erstellt: {doc_name}")
+    st.success(f"Worksheet successfully created: {doc_name}")
 
     with open(doc_name, "rb") as f:
         data = f.read()
