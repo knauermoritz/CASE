@@ -6,6 +6,7 @@ import json
 from openai import OpenAI
 import os
 from datetime import datetime
+import io
 
 apikey = st.secrets["API_KEY"]
 client = OpenAI(api_key = apikey)
