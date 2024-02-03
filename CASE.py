@@ -13,6 +13,8 @@ client = OpenAI(api_key = apikey)
 
 
 def prompt(subject, topic, language):
+    
+    prompt_text = "f"Erstelle ein Arbeitsblatt für das Fach {subject} zum {topic}. die ersten 5 fragen sollen verständnisfragen sein. die zweiten 2 fragen sollen multiple choise fragen sein(a), b), c), d)), und die letzte frage soll ein lückentext sein(c.a 4 sätze). es soll in diesem format sein : arbeitsblatt: ['Überschrift', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage 5', 'Multiple Frage choise a) antwort, b) antwort, c) antwort, d) antwort', 'Multiple choise', 'Lückentext']""
     try:
         if language == 'German':
             prompt_text = f"Erstelle ein Arbeitsblatt für das Fach {subject} zum {topic}. die ersten 5 fragen sollen verständnisfragen sein. die zweiten 2 fragen sollen multiple choise fragen sein(a), b), c), d)), und die letzte frage soll ein lückentext sein(c.a 4 sätze). es soll in diesem format sein : arbeitsblatt: ['Überschrift', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage 5', 'Multiple Frage choise a) antwort, b) antwort, c) antwort, d) antwort', 'Multiple choise', 'Lückentext']"
@@ -20,10 +22,12 @@ def prompt(subject, topic, language):
             prompt_text = f"Create a worksheet for the subject {subject} on {topic}. The first 5 questions should be comprehension questions. The second 2 questions should be multiple-choice questions (a), b), c), d)), and the last question should be a cloze (approximately 4 sentences). It should be in this format: worksheet: ['Heading', 'Comprehension question', 'Comprehension question', 'Comprehension question', 'Comprehension question', 'Comprehension question 5', 'Multiple-choice question a) answer, b) answer, c) answer, d) answer', 'Multiple-choice', 'Cloze']"
         elif language == 'French':
             prompt_text = f"Créez une fiche de travail pour la matière {subject} sur le {topic}. les 5 premières questions doivent être des questions de compréhension. les 2 secondes questions doivent être des questions à choix multiples(a), b), c), d)), et la dernière question doit être un texte à trous(c.a. 4 phrases). il doit être dans ce format : feuille de travail : ['titre', 'question de compréhension', 'question de compréhension', 'question de compréhension', 'question de compréhension 5', 'choix multiple de questions a) réponse, b) réponse, c) réponse, d) réponse', 'choix multiple', 'texte à trous']"
-    except Exception as e:
+    except:
         prompt_text = f"Erstelle ein Arbeitsblatt für das Fach {subject} zum {topic}. die ersten 5 fragen sollen verständnisfragen sein. die zweiten 2 fragen sollen multiple choise fragen sein(a), b), c), d)), und die letzte frage soll ein lückentext sein(c.a 4 sätze). es soll in diesem format sein : arbeitsblatt: ['Überschrift', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage 5', 'Multiple Frage choise a) antwort, b) antwort, c) antwort, d) antwort', 'Multiple choise', 'Lückentext']"
-    
+      
+        
     return prompt_text
+
 
 
 
