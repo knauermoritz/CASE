@@ -14,7 +14,7 @@ client = OpenAI(api_key = apikey)
 
 def prompt(subject, topic, language):
     
-    prompt_text = "f"Erstelle ein Arbeitsblatt für das Fach {subject} zum {topic}. die ersten 5 fragen sollen verständnisfragen sein. die zweiten 2 fragen sollen multiple choise fragen sein(a), b), c), d)), und die letzte frage soll ein lückentext sein(c.a 4 sätze). es soll in diesem format sein : arbeitsblatt: ['Überschrift', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage 5', 'Multiple Frage choise a) antwort, b) antwort, c) antwort, d) antwort', 'Multiple choise', 'Lückentext']""
+    prompt_text = f"Erstelle ein Arbeitsblatt für das Fach {subject} zum {topic}. die ersten 5 fragen sollen verständnisfragen sein. die zweiten 2 fragen sollen multiple choise fragen sein(a), b), c), d)), und die letzte frage soll ein lückentext sein(c.a 4 sätze). es soll in diesem format sein : arbeitsblatt: ['Überschrift', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage 5', 'Multiple Frage choise a) antwort, b) antwort, c) antwort, d) antwort', 'Multiple choise', 'Lückentext']"
     try:
         if language == 'German':
             prompt_text = f"Erstelle ein Arbeitsblatt für das Fach {subject} zum {topic}. die ersten 5 fragen sollen verständnisfragen sein. die zweiten 2 fragen sollen multiple choise fragen sein(a), b), c), d)), und die letzte frage soll ein lückentext sein(c.a 4 sätze). es soll in diesem format sein : arbeitsblatt: ['Überschrift', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage', 'Verständnisfrage 5', 'Multiple Frage choise a) antwort, b) antwort, c) antwort, d) antwort', 'Multiple choise', 'Lückentext']"
