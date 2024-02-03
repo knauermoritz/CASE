@@ -110,7 +110,7 @@ if subject_selection != "Select a Subject":
 
 topic = st.text_input("Topic:")
 
-language_options = ['German', 'English', 'French']
+language_options = ['German🇩🇪', 'English🇬🇧', 'French🇫🇷']
 
 language = st.selectbox('Choose Your Language:', language_options)
 
