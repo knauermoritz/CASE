@@ -10,26 +10,35 @@ from datetime import datetime
 apikey = st.secrets["API_KEY"]
 client = OpenAI(api_key = apikey)
 
-def response(fach, thema):
+def prompt(subject, topic, language):
+    if language == 'German':
+        prompt_text = f"Create a worksheet for the subject {subject} on {topic}. The first 5 questions should be comprehension questions. The second 2 questions should be multiple-choice questions (a), b), c), d)), and the last question should be a cloze (approximately 4 sentences). It should be in this format: worksheet: ['Heading', 'Comprehension question', 'Comprehension question', 'Comprehension question', 'Comprehension question', 'Comprehension question 5', 'Multiple-choice question a) answer, b) answer, c) answer, d) answer', 'Multiple-choice', 'Cloze']"
+    elif language == 'English':
+        prompt_text = f"Create a worksheet for the subject {subject} on {topic}. The first 5 questions should be comprehension questions. The second 2 questions should be multiple-choice questions (a), b), c), d)), and the last question should be a cloze (approximately 4 sentences). It should be in this format: worksheet: ['Heading', 'Comprehension question', 'Comprehension question', 'Comprehension question', 'Comprehension question', 'Comprehension question 5', 'Multiple-choice question a) answer, b) answer, c) answer, d) answer', 'Multiple-choice', 'Cloze']"
+    elif language == 'French':
+        prompt_text = f"Create a worksheet for the subject {subject} on {topic}. The first 5 questions should be comprehension questions. The second 2 questions should be multiple-choice questions (a), b), c), d)), and the last question should be a cloze (approximately 4 sentences). It should be in this format: worksheet: ['Heading', 'Comprehension question', 'Comprehension question', 'Comprehension question', 'Comprehension question 5', 'Multiple-choice question a) answer, b) answer, c) answer, d) answer', 'Multiple-choice', 'Cloze']"
+    return prompt_text
+
+def response(prompt_text):
     response = client.chat.completions.create(
         model="gpt-3.5-turbo-1106",
         response_format={"type": "json_object"},
         messages=[
             {"role": "system", "content": "You are a helpful assistant designed to output JSON."},
-            {"role": "user", "content": f"Create a worksheet for the subject {fach} on the {thema}. the first 5 questions should be comprehension questions. the second 2 questions should be multiple choice questions(a), b), c), d)), and the last question should be a cloze(c.a 4 sentences). it should be in this format : worksheet: ['heading', 'comprehension question', 'comprehension question', 'comprehension question', 'comprehension question', 'comprehension question 5', 'multiple choice question a) answer, b) answer, c) answer, d) answer', 'multiple choice', 'cloze text']"}
+            {"role": "user", "content": prompt_text},
         ]
     )
     while True:
         try:
-            liste = json.loads(response.choices[0].message.content)["arbeitsblatt"]
+            worksheet_list = json.loads(response.choices[0].message.content)["worksheet"]
             break
         except:
             pass
-    return liste
+    return worksheet_list
 
-def word(ab, fach):
+def word(worksheet, subject):
     doc = Document()
-    title = ab[0].replace(" ", "-").lower()
+    title = worksheet[0].replace(" ", "-").lower()
 
     sections = doc.sections
     for section in sections:
@@ -44,23 +53,23 @@ def word(ab, fach):
     font.size = Pt(12)
     font.color.rgb = RGBColor(40, 40, 40)
     
-    aktueller_datum = datetime.now()
-    datum = aktueller_datum.strftime("%d.%m.%y")
+    current_date = datetime.now()
+    date = current_date.strftime("%d.%m.%y")
     header_style = doc.styles["Header"]
     header_paragraph = doc.sections[0].header.paragraphs[0]
-    header_paragraph.text = f"{fach}\t\t{datum}"
+    header_paragraph.text = f"{subject}\t\t{date}"
     header_paragraph.style = header_style
 
     header_style = doc.styles["Heading1"] 
     header_paragraph = doc.add_paragraph()
-    header_run = header_paragraph.add_run(ab[0])
+    header_run = header_paragraph.add_run(worksheet[0])
     header_run.bold = True
     header_run.font.size = Pt(18) 
 
     for _ in range(2):
         doc.add_paragraph()
 
-    for i, content in enumerate(ab[1:], start=1):
+    for i, content in enumerate(worksheet[1:], start=1):
         subtitle_paragraph = doc.add_paragraph(f"{i}) {content}")
         subtitle_run = subtitle_paragraph.runs[0]
         subtitle_run.font.bold = True
@@ -70,23 +79,14 @@ def word(ab, fach):
             doc.add_paragraph()
 
     doc_name = f"{title}.docx"
+  
     doc.save(doc_name)
-    return title, doc_name
+    return doc_name
 
-def fach():
-    school_subjects = ["mathematics 🔢", "german 📚", "english 🇬🇧", "history 📜", "geography 🌍", "biology 🌿", "chemistry 🧪", "physics ⚙️", "computer science 💻", "music 🎵", "art 🎨", "physical education 🏃‍♂️", "ethics 🤔", "religion ⛪", "politics 🗳️", "economics 💹", "philosophy 🤯", "social studies 👥", "psychology 🧠", "sociology 👩‍👩‍👧‍👦", "foreign language 🗣️", "latin 🏛️", "spanish 🇪🇸", "french 🇫🇷", "italian 🇮🇹", "russian 🇷🇺",]
-
-    subject_option = st.selectbox("school subject", ["chose a subject", "other school subject"] + school_subjects)
-
-    if subject_option == "chose a subject":
-        subject = None
-    elif subject_option == "other school subject":
-        subject = st.text_input("Eigenes Schulfach eingeben")[:-1]
-        st.empty()
-    else:
-        subject = subject_option[:-1]
-
-    return subject
+def create_worksheet(subject_selection, topic, subject, language):
+    worksheet = response(prompt(subject, topic, language))
+    doc_download = word(worksheet, subject_selection)
+    return doc_download
 
 st.set_page_config(
     page_title="CASE",
@@ -95,18 +95,41 @@ st.set_page_config(
 
 st.title("CASE")
 
-fach_selection = fach()
-thema = st.text_input("Thema:")
+subject_selection = st.selectbox(
+    "Subject",
+    ["Select a Subject"] + ["Enter Your Own Subject"] + ["Mathematics 🔢", "German 📚", "English 🇬🇧", "History 📜", "Geography 🌍", "Biology 🌿", "Chemistry 🧪", "Physics ⚙️", "Computer Science 💻", "Music 🎵", "Art 🎨", "Sports 🏃‍♂️", "Ethics 🤔", "Religion ⛪", "Politics 🗳️", "Economics 💹", "Philosophy 🤯", "Social Studies 👥", "Psychology 🧠", "Sociology 👩‍👩‍👧‍👦", "Foreign Language 🗣️", "Latin 🏛️", "Spanish 🇪🇸", "French 🇫🇷", "Italian 🇮🇹", "Russian 🇷🇺", "Chinese 🇨🇳", "Japanese 🇯🇵", "Korean 🇰🇷", "Arabic 🇸🇦", "Media Studies 📱"],
+    key="subject_dropdown"
+)
 
-if st.button("Create worksheet"):
-    ab = response(fach_selection, thema)
-    title, doc_name = word(ab, fach_selection)
-    st.success(f"Worksheet successfully created: {doc_name}")
 
-    with open(doc_name, "rb") as f:
-        data = f.read()
-        b64 = base64.b64encode(data).decode('utf-8')
-        href = f'<a href="data:application/octet-stream;base64,{b64}" download="{doc_name}">Dokument herunterladen</a>'
-        st.markdown(href, unsafe_allow_html=True)
+if subject_selection != "Select a Subject":
+    if subject_selection == "Enter Your Own Subject":
+        subject_selection = st.text_input("Enter Your Own Subject")[:-1]
+        st.empty()
 
-    os.remove(doc_name)
+topic = st.text_input("Topic:")
+
+language_options = ['German', 'English', 'French']
+
+language = st.selectbox('Choose Your Language:', language_options)
+
+create_button = st.button("Create Worksheet")
+
+
+if topic and create_button:
+    doc_download = create_worksheet(subject_selection, topic, subject_selection, language)
+    bio = io.BytesIO()
+    doc = Document(doc_download)
+    doc.save(bio)
+
+    st.success("Worksheet created successfully!")
+
+    st.download_button(
+        label="Click here to download",
+        data=bio.getvalue(),
+        file_name="Worksheet.docx",
+        mime="docx",
+        key="download_button",
+        help="green"
+    )
+
